@@ -7,9 +7,12 @@ const EstimateForm: React.FC = () => {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('phone', phone);
@@ -21,32 +24,85 @@ const EstimateForm: React.FC = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setSuccess(true);
+      setName('');
+      setPhone('');
+      setMessage('');
+      setImage(null);
     } catch (err) {
       alert('Ошибка отправки заявки');
       console.error(err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Узнать стоимость</h1>
+    <div className="estimate-form-container">
       {success ? (
-        <p style={{ color: 'green' }}>Заявка отправлена! Мы скоро свяжемся с вами.</p>
+        <div className="success-message">
+          <h3>Спасибо за заявку!</h3>
+          <p>Мы свяжемся с вами в ближайшее время для уточнения деталей.</p>
+          <button
+            className="reset-form-btn"
+            onClick={() => setSuccess(false)}
+          >
+            Отправить ещё одну заявку
+          </button>
+        </div>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Имя: <input value={name} onChange={e => setName(e.target.value)} required /></label>
+        <form onSubmit={handleSubmit} className="estimate-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="name">Имя *</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                required
+                placeholder="Ваше имя"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Телефон *</label>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                required
+                placeholder="+7 (___) ___-__-__"
+              />
+            </div>
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Телефон: <input value={phone} onChange={e => setPhone(e.target.value)} required /></label>
+
+          <div className="form-group">
+            <label htmlFor="message">Сообщение</label>
+            <textarea
+              id="message"
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              placeholder="Опишите вашу задачу или задайте вопрос"
+            />
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Сообщение: <textarea value={message} onChange={e => setMessage(e.target.value)} /></label>
+
+          <div className="form-group">
+            <label htmlFor="image">Фото крыши (необязательно)</label>
+            <input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={e => setImage(e.target.files?.[0] || null)}
+            />
           </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label>Фото крыши: <input type="file" accept="image/*" onChange={e => setImage(e.target.files?.[0] || null)} /></label>
-          </div>
-          <button type="submit">Отправить</button>
+
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Отправляем...' : 'Получить расчет'}
+          </button>
         </form>
       )}
     </div>

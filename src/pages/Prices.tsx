@@ -9,7 +9,7 @@ const Prices: React.FC = () => {
     api.get<PriceItem[]>('/prices').then(res => setPrices(res.data));
   }, []);
 
-  // Группировка по категориям
+  // Group by categories
   const grouped = prices.reduce((acc, item) => {
     if (!acc[item.category]) acc[item.category] = [];
     acc[item.category].push(item);
@@ -17,29 +17,20 @@ const Prices: React.FC = () => {
   }, {} as Record<string, PriceItem[]>);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Цены на кровельные работы</h1>
-      <p>Точный расчёт возможен после осмотра специалистом.</p>
+    <div className="prices-container">
+      <p className="prices-intro">Точный расчёт возможен после осмотра специалистом.</p>
 
       {Object.entries(grouped).map(([category, items]) => (
-        <div key={category} style={{ marginBottom: '2rem' }}>
-          <h2>{category}</h2>
-          <table border={1} cellPadding={8} style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th>Услуга</th>
-                <th>Цена</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map(item => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>{item.priceRange}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div key={category} className="price-category">
+          <h3 className="category-title">{category}</h3>
+          <div className="price-items-grid">
+            {items.map(item => (
+              <div key={item.id} className="price-item-card">
+                <div className="price-name">{item.name}</div>
+                <div className="price-value">{item.priceRange}</div>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
