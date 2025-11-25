@@ -1,26 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Services from './pages/Services';
+import Prices from './pages/Prices';
+import Faq from './pages/Faq';
+import EstimateForm from './pages/EstimateForm';
+import Admin from './pages/Admin';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/prices" element={<Prices />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/estimate" element={<EstimateForm />} />
+          <Route path="/admin" element={<Admin />} />
+        </Routes>
+      </main>
+      <Footer />
+    </>
   );
-}
+};
 
 export default App;
